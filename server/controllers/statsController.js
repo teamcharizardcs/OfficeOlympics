@@ -1,37 +1,48 @@
-const statsController = {};
 const pool = require('../db/db.js');
 
-//Given an office and a game, return an array of user's and their rank. 
-statsController.getLeaderBoard = (req,res,next) => {
-    const officeHostingGame = req.params.office;
-    const gameAtThisOffice = req.params.game;
-    console.log("Searching in the following office: ", officeHostingGame);
-    console.log("Searching stats for the following game in the DB: ", gameAtThisOffice);
-    let data = []; 
-     //create the empty object that will capture the response from the database
-    //search the DB for all of the usernames and thier ranks (asynch)
-    pool.query(`SELECT offices.name as officelocation, games.name as gamename, employees.username, employees.imgurl, stats.rank from games join stats on games._id = gameid join employees on usernameid = employees._id join offices on games.officeid = offices._id where gameid = $1 order by rank asc;`,[gameAtThisOffice])
-    .then(result => {
-        console.log(result.rows);
-        data = result.rows;
-        //return the info in the response, the game ids for this office
-        res.json(data);
-        })
-    // res.send({Username1: "Vance", Rank1: "1", Username2: "Alex", Rank2: "2", Username3: "Tang", Rank3: "3"})
-}
+const statsController = {};
 
-statsController.moveUser = (req,res,next) => {
-    const gameToChange = req.params.game;
-    const userToMove = req.params.userid;
-    const rankDirection = req.body.rank;
-    let data = {};
-    console.log("Changing the following game: ", gameToChange);
-    console.log("We are going to rank this user: ", userToMove);
-    console.log("In this way: ", rankDirection);
-    //in req.body.rank you can specify "up", "down" or "last"
-    //req.body.rank "last" indicates that the user just joined the game so we want to add them to the bottom of the ladder
-    //not sure how we will do this........
-    res.send({NewLeaderBoard: "someLeaderBoardArr"}) 
+statsController.getLeaderBoard = async (req, res, next) => {
+  const { officeId, gameName } = req.params;
+
+  const query = {
+    text: `SELECT offices.name as "officeLocation", 
+    games.name as "gameName", employees.username, 
+    employees.img_url, stats.rank 
+    from games 
+    join stats on games._id = stats.game_id 
+    join employees on stats.employee_id = employees._id 
+    join offices on games.office_id = offices._id 
+    where games.name = $1 and games.office_id = $2
+    order by stats.rank asc;`,
+    values: [gameName, officeId],
+  };
+
+  try {
+    const result = await pool.query(query);
+    res.locals.leaderboard = result.rows;
+    return next();
+  } catch (e) {
+    return next({
+      log: 'Database error getting the leaderboard',
+      message: { err: 'Datbase error getting leaderboard' },
+    });
+  }
+};
+
+statsController.moveUser = (req, res, next) => {
+  // const { gameName, userId, position } = req.params;
+
+  return next();
+  // let data = {};
+  // console.log("Changing the following game: ", gameToChange);
+  // console.log("We are going to rank this user: ", userToMove);
+  // console.log("In this way: ", rankDirection);
+  // //in req.body.rank you can specify "up", "down" or "last"
+  // //req.body.rank "last" indicates that the user just joined 
+  // the game so we want to add them to the bottom of the ladder
+  // //not sure how we will do this........
+  // res.send({NewLeaderBoard: "someLeaderBoardArr"}) 
 };
 
 module.exports = statsController;

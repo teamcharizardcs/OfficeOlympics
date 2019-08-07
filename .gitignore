@@ -1,7 +1,7 @@
 node_modules
 build
 .DS_store
-.env
+# .env
 npm-debug.log
 key.pem
 csr.pem

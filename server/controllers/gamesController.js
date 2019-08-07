@@ -1,54 +1,81 @@
-
-const gamesController = {};
 const pool = require('../db/db.js');
 
-//When given an office id, return the list of games that belong to that office 
-gamesController.getGames = (req,res,next) => {
-    const officeSearchTerm = req.params.office;
-    console.log("Here is the office we are searching for in the DB: ",officeSearchTerm);
-         //create the empty array that will capture the response from the database
-    let data = []; 
+const gamesController = {};
 
-    //search the DB for the correct Office (an asynchronus request) 
-    pool.query('SELECT _id as gameid, name FROM games WHERE officeid = $1 order by name asc', [officeSearchTerm])
-        .then(result => {
-        console.log(result.rows);
-        data = result.rows;
-        //return the info in the response, the game ids for this office
-        res.json(data);
-        })
-    .catch(e=>next(e));
-   
-    //fake data response 
-    //res.send({Game1: "Game_One", Game2: "Game_Two", Game3: "Game_Three"})
+gamesController.getGames = async (req, res, next) => {
+  const { officeId } = req.params;
+  try {
+    const query = {
+      text: 'SELECT name FROM games WHERE office_id = $1 order by name asc',
+      values: [officeId],
+    };
+
+    const result = await pool.query(query);
+    console.log(result.rows);
+    res.locals.games = result.rows;
+
+    return next();
+  } catch (e) {
+    return next({
+      log: `Database error getting office games: ${e.stack}`,
+      message: { err: 'Could not get games from database' },
+    });
+  }
 };
 
-//Given a game name, an officeid and a userid: 1) add a new game to the list of games for the office 2)add the user to that game at rank 1  
-gamesController.newGame = (req,res,next) => {
-    const newGameName = req.params.gamename;
-    const officeToUpdate = req.params.office;
-    const creatorsUserId = req.params.userid;
-    let data = [];
-    console.log("We're going to create a game with the name of: ", newGameName);
-    console.log("In this office: ", officeToUpdate);
-    console.log("We'll put the following user at the last rank of the game: ", creatorsUserId);
-    //write the game to the DB
-    pool.query('INSERT INTO games(name, officeid) VALUES($1, $2) RETURNING *', [newGameName, officeToUpdate])
-    .then(result => {
-      console.log(result.rows);
-      console.log("Inserted a new game into games called: ", newGameName);
-      data = result.rows;
-      const gameid = result.rows[0]._id;
-        pool.query('INSERT INTO stats(usernameid, gameid, rank) VALUES($1, $2, $3) RETURNING *', [creatorsUserId, gameid, 1])
-            .then(result => {
-                console.log("Inserted to the stats of the newly created game: ", creatorsUserId);
-                res.send(data);
-            })
-            .catch(e=>next(e));  
-    })
-    .catch(e=>next(e));
-    //put the user at the bottom of the game once it is created.
-    //res.send({Game1: "Game_One", Game2: "Game_Two", Game3: "Game_Three", Game4: "Game_Four"})
+// Given a game name, an officeid and a userid:
+// 1) add a new game to the list of games for the office
+// 2) add the user to that game at rank 1
+gamesController.newGame = async(req, res, next) => {
+  const { gameName, officeId, userId } = req.params;
+
+  const insertQuery = {
+    text: 'INSERT INTO games(name, office_id) VALUES($1, $2) RETURNING *',
+    values: [gameName, officeId],
+  };
+
+  try {
+    let newGame = await pool.query({
+      text: 'SELECT * FROM games WHERE name = $1 AND office_id = $2',
+      values: [gameName, officeId],
+    });
+    // game does not exist
+    if (!newGame.rows.length) {
+      newGame = await pool.query(insertQuery);
+    }
+
+    if (!newGame.rows.length) {
+      return next({
+        log: 'No game added to DB',
+        message: { err: 'Could not add game to DB' },
+      });
+    }
+
+    const gameId = newGame.rows[0]._id;
+    console.log(`gameid is ${gameId}`);
+
+    const insertUser = {
+      text: 'INSERT INTO stats(employee_id, game_id, rank) VALUES($1, $2, $3) RETURNING *',
+      values: [userId, gameId, 1],
+    };
+
+    const stat = await pool.query(insertUser);
+    console.log(`stat is ${JSON.stringify(stat.rows)}`);
+    if (!stat.rows.length) {
+      return next({
+        log: 'No stats added to DB',
+        message: { err: 'Could not add stats to DB' },
+      });
+    }
+    res.locals.data = stat;
+
+    return next();
+  } catch (e) {
+    return next({
+      log: `Database error adding game : ${e.stack}`,
+      message: { err: 'Database error adding game' },
+    });
+  }
 };
 
 module.exports = gamesController;
