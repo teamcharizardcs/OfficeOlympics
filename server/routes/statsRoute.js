@@ -1,19 +1,12 @@
 const statsRouter = require('express').Router();
 
-// controllers
 const statsController = require('../controllers/statsController.js');
 
-statsRouter.get('/:office/:game',
-    statsController.getLeaderBoard,
-    (req,res) => {res.status(200)}
-)
+statsRouter.get('/:officeId/:gameName', statsController.getLeaderBoard,
+  (req, res) => res.status(200).json(res.locals.leaderboard));
 
-statsRouter.post('/:game/:userid/',
-    //when you send this post request you have to send "up" or "down" in the request body
-    //to rank the user up or down
-    statsController.moveUser,
-    (req,res) => {res.status(200)}
-)
-// authRouter.post('/signup', authController.createUser);
+// NOT WORKING
+// statsRouter.post('/:gameId/:userId/', statsController.moveUser,
+//   (req, res) => res.status(200));
 
 module.exports = statsRouter;

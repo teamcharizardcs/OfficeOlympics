@@ -1,125 +1,216 @@
 const bcrypt = require('bcrypt');
-const pool = require('../db/db.js');
+const pool = require('../db/db');
 const jwt = require('jsonwebtoken');
 
 const SALTROUNDS = 10;
 const authController = {};
 
-// check to make sure the user puts in valid inputs on front-end
+/**
+   * validateUserInput - verifies username and pass meet requirements
+   *
+   * @param req - cotains the user's username, password
+   * @param res - unchanged
+   */
 authController.validateUserInput = (req, res, next) => {
-  console.log('validating user input');
-  console.log('req.body: ', req.body)
-  let {username, password} = req.body;
+  // console.log('validating user input');
+  // console.log('req.body: ', req.body);
+
+  let { username, password } = req.body;
   username = username.trim();
   password = password.trim();
-  const errors = {};
-  if (!username) errors.username = 'You must provide a username';
-  if (!password) errors.password = 'You must provide a password';
-  if (password.length < 6) errors.passwordLength = 'Your password must be longer than 6 characters';
-  if (Object.entries(errors).length === 0) return next();
-  console.log('there was an error in validating');
-  return res.status(400).json(errors);
-}
 
-// check to see if the jwt has laready been signed
+  const message = {};
+  if (!username) message.err = 'You must provide a username';
+  if (!password) message.err = 'You must provide a password';
+  if (password.length < 6) message.err = 'Your password must be longer than 6 characters';
+
+  if (message.err) {
+    return next({
+      log: 'Invalid login credential',
+      message,
+    });
+  }
+  console.log('User input is valid');
+  return next();
+};
+
+/**
+   * isSigned - checks to see if the user has a valid token; should skip
+   *            login if that's the case, but currently is not used in the
+   *            authRouter to do so
+   *
+   * @param req - requires the username in the body, but doesn't use it currently
+   * @param res - adds the property info that's just user info and an isSigned bool
+   */
 authController.isSigned = (req, res, next) => {
   console.log('checking if user is Signed');
-  const {username} = req.body;
   // if the token is empty continue onto the next piece of middleware (either signup or login)
   if (!req.cookies.token) return next();
+  
+  const { username } = req.body;
   // otherwise verify the token in the req body, using the jwt_key from the .env file
   jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, decoded) => {
-    if (decoded) {
-      return res.status(200).json({isSigned: true, user: {username, id: req.cookies.id}});
-    }
-    else {
-      return next();
-    }
-})
-}
-
-// set info for userid and username when 
-
-// auth logic to create a new user
-authController.signUp = (req, res) => {
-  console.log('trying to sign up user');
-  const pw = req.body.password;
-  const un = req.body.username;
-  bcrypt.hash(pw, SALTROUNDS, function(err, hash) {
-    if (err) return res.status(500).json({err: 'there was an error is querying the database: ' + err});
-      //connects to the client
-      pool.connect();
-      // query to find if a user with the username exists already
-      pool.query('select * from employees where username = $1', [un], (err, result) => {
-        if (err) return res.status(500).json({err: 'there was an error is querying the database: ' + err});
-        if (result.rowCount.length > 0) return res.status(400).json({user: req.body});
-      })
-      const insertEmployeesText = `INSERT INTO employees(username, password, officeid) VALUES($1, $2, $3) RETURNING *`;
-      // parameters to insert into placeholders
-      const insertEmployeesParams = [un, hash, 1];
-      // query to insert a new employee
-      pool.query(insertEmployeesText, insertEmployeesParams, (err, result) => {
-        if (err) return res.status(500).json({err: 'there was an error is querying the database: ' + err});
-        const payload = {
-          success: true,
-          user: {username: result.rows[0].username, id: result.rows[0]._id}
-        }
-        // sign the jwt with the payload, jwt_key, specify the algo, and expiration time
-        jwt.sign(payload, process.env.JWT_KEY, { algorithm: 'HS256', expiresIn: '1 day'}, (err, token) => {
-          // end the pool connection to db
-          pool.end();
-          // return info about the user including the username, id, and token
-          res.cookie('token', token, {httpOnly: true});
-          res.cookie('id', result.rows[0]._id);
-          return res.status(200).json({user: {username: result.rows[0].username, id: result.rows[0]._id}, isSigned: true});
-        });
-      });
-  });
-}
-
-// logic to check whether user credentials match password on file
-authController.login = (req, res) => {
-  console.log('trying to login user');
-  const un = req.body.username;
-  const pw = req.body.password;
-  // compare hashed password with password put into Login.js component
-  const findEmployeeQuery = 'select * from employees where username = $1'
-  const findEmployeesParams = [un];
-  // connect to the pool
-  pool.connect()
-  // query to find an employee that matches the username
-  pool.query(findEmployeeQuery, findEmployeesParams, (err, result) => {
-    if (err) return res.status(500).json({err: 'there was an error is querying the database: ' + err});
-    console.log(result);
-    if (result.rowCount > 0) {
-  
-    // use bcrypt to compare password passed in through req and pw on file
-    bcrypt.compare(pw, result.rows[0].password, function(err, same) {
-    if (err) return res.status(500).json({err: 'there was an error is querying the database: ' + err});
-    if (same) {
-      // if pws match sign the jwt
-      const payload = {
-        success: true,
-        user: {username: result.rows[0].username, id: result.rows[0]._id}
-      }
-      jwt.sign(payload, process.env.JWT_KEY, { algorithm: 'HS256', expiresIn: '1 day'}, (err, token) => {
-        pool.end();
-        res.cookie('token', token, {httpOnly: true});
-        res.cookie('id', result.rows[0]._id);
-        return res.status(200).json({user:{username: result.rows[0].username, id: result.rows[0]._id}, token: token, isSigned: true});
+    if (!decoded) {
+      return next({
+        log: 'Error verifying token',
+        message: { err: 'Could not verify token' },
       });
     }
-    else {
-      return res.status(400).json({err: 'That password does not match the one on file'})
+    res.locals.info = {
+      isSigned: true,
+      user: {
+        username,
+        id: req.cookies.id,
+      },
+    };
+
+    return next();
+  });
+};
+
+/**
+   * singUp - checks the user's company to see if it's in the db, otherwise creates it
+   *          then checks if the user's office is in the DB, else creates it,
+   *          then does the same for user info
+   *
+   * @param req - cotains the user's username, password, companyName, 
+   *              and officeLocation in the body
+   * @param res - contains the user's username and id in its locals property
+   */
+authController.signUp = async (req, res, next) => {
+  const { username, password, companyName, officeLocation } = req.body;
+
+  const hashedPass = bcrypt.hashSync(password, SALTROUNDS);
+
+  try {
+    const addCompanyQ = {
+      text: `INSERT INTO companies (name) VALUES ($1)
+      ON CONFLICT (name) DO NOTHING
+      RETURNING *`,
+      values: [companyName],
+    };
+    // check if company name already exists
+    let company = await pool.query(addCompanyQ);
+    // if it was already in the DB, nothing is returned in rows
+    if (!company.rows.length) {
+      company = await pool.query({
+        text: 'SELECT * FROM companies WHERE name = $1',
+        values: [companyName],
+      });
     }
-  });
-}
-else {
-  return res.status(400).json({err: 'That username is not on file'})
-}
 
-  });
+    // check if the office already exists
+    const addOfficeQ = {
+      text: `INSERT INTO offices (name, company_id) VALUES ($1, $2)
+      ON CONFLICT (name) DO NOTHING
+      RETURNING *`,
+      values: [officeLocation, company.rows[0]._id],
+    };
+    let office = await pool.query(addOfficeQ);
+    // if it was already in the DB, nothing is returned in rows
+    if (!office.rows.length) {
+      office = await pool.query({
+        text: 'SELECT * FROM offices WHERE name = $1',
+        values: [officeLocation],
+      });
+    }
 
-  
-}
+    // check if the user already exists
+    const addEmployeeQ = {
+      text: `INSERT INTO employees(username, password, office_id) VALUES($1, $2, $3)
+      ON CONFLICT (username) DO NOTHING
+      RETURNING *`,
+      values: [username, hashedPass, office.rows[0]._id],
+    };
+    let user = await pool.query(addEmployeeQ);
+    if (!user.rows.length) {
+      user = pool.query({
+        text: 'SELECT * FROM employees WHERE username = $1',
+        values: [username],
+      });
+    }
+
+    res.locals.user = user.rows[0];
+
+    const payload = {
+      success: true,
+      user: { username: res.locals.user.username, id: res.locals.user._id },
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_KEY,
+      { algorithm: 'HS256', expiresIn: '1 day' });
+
+    res.cookie('token', token, { httpOnly: true });
+    res.cookie('id', user.rows[0]._id);
+    return next();
+  } catch (e) {
+    return next({
+      log: `Database error signing up: ${e.stack}`,
+      status: 500,
+      message: { err: 'Database error signing up' },
+    });
+  }
+};
+
+/**
+   * login - Checks if the username is in the DB, and then checks the provided
+   *         password agains the stored password
+   *
+   * @param req - cotains the user's username and password
+   * @param res - adds the user's username, password, and jwt info to res.locals
+   */
+authController.login = async (req, res, next) => {
+  const { username, password } = req.body;
+
+  const findQuery = {
+    text: 'select * from employees where username = $1',
+    values: [username],
+  };
+
+  try {
+    const result = await pool.query(findQuery);
+    if (!result.rows.length) {
+      return next({
+        log: 'Database error logging in: user not found',
+        message: { err: 'Incorrect user name' },
+      });
+    }
+    const match = bcrypt.compare(password, result.rows[0].password);
+    if (!match) {
+      return next({
+        log: 'Error logging in: incorrect password',
+        message: { err: 'Incorrect password' },
+      });
+    }
+
+    res.locals.user = {
+      username: result.rows[0].username,
+      id: result.rows[0]._id,
+    };
+
+    const payload = {
+      success: true,
+      user: res.locals.user,
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_KEY,
+      { algorithm: 'HS256', expiresIn: '1 day' });
+
+    res.cookie('token', token, { httpOnly: true });
+    res.cookie('id', result.rows[0]._id);
+    res.locals.jwt = {
+      token,
+      isSigned: true,
+    };
+
+    return next();
+  } catch (e) {
+    return next({
+      log: `Database error signing up: ${e.stack}`,
+      status: 500,
+      message: { err: 'Unknown database error logging in' },
+    });
+  }
+};
+
 module.exports = authController;

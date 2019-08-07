@@ -3,11 +3,7 @@ const employeesRouter = require('express').Router();
 // controllers
 const employeesController = require('../controllers/employeesController.js');
 
-employeesRouter.get('/:userid', 
-    //retrive employee information for the user's sideBar
-    employeesController.getInfo,
-    (req,res) => {res.status(200).json(res.locals.data)}
-); 
-// authRouter.post('/signup', authController.createUser);
+employeesRouter.get('/:userId', employeesController.getInfo,
+  (req, res) => res.status(200).json(res.locals.data));
 
 module.exports = employeesRouter;
