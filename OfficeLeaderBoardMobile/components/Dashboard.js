@@ -1,6 +1,6 @@
-import { ScrollView, Text, Image } from "react-native";
+import { ScrollView, Text, Image, ImageBackground } from "react-native";
 import React, { Component } from "react";
-import styles from "./Styles";
+// import styles from "./Styles";
 import { Button, Avatar, Input, ListItem, Card } from "react-native-elements";
 // import Icon from "react-native-vector-icons/FontAwesome";
 import { LinearGradient } from "expo-linear-gradient";
@@ -8,7 +8,7 @@ import Pong from "../assets/images/pingpong.jpg";
 import SmashBros from "../assets/images/smashbros.jpg";
 import RageCage from "../assets/images/ragecage.jpg";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
+import Background from '../assets/images/background.jpg'
 const RaisedButton = props => <Button raised {...props} />;
 
 const images = [RageCage, SmashBros, Pong];
@@ -55,7 +55,8 @@ export default class Dashboard extends Component {
     const itemId = navigation.getParam("itemId", "NO-ID");
     const otherParam = navigation.getParam("otherParam", "some default value");
     return (
-      <LinearGradient colors={["#03738c", "#024059"]}>
+      // <LinearGradient colors={["#03738c", "#024059"]}>
+      <ImageBackground source={Background} style={{width: '100%', height: '100%'}}>    
         <ScrollView>
           {/* <Text>DetailsScreen</Text>
           <Text>itemId: {JSON.stringify(itemId)}</Text>
@@ -135,7 +136,8 @@ export default class Dashboard extends Component {
           /> */}
           {/* <TabNavigation  />s */}
         </ScrollView>
-      </LinearGradient>
+      {/* // </LinearGradient> */}
+      </ImageBackground>
     );
   }
 }
