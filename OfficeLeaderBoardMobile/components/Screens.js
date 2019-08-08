@@ -2,8 +2,8 @@ import { Text, View, ScrollView } from "react-native";
 import styles from "./Styles";
 //   import { createStackNavigator } from "react-navigation";
 import {ThemeProvider, Input, Button} from 'react-native-elements';
-import Icon from "react-native-vector-icons/FontAwesome";
 import React, { Component } from "react";
+import Icon from "react-native-vector-icons/FontAwesome";
 //   import AppTabNavigator from './Navigator2';
 // import { TabNavigation } from "./Navigator";
 
