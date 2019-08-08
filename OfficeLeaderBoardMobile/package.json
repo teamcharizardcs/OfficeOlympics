@@ -7,7 +7,6 @@
     "test": "jest"
   },
   "dependencies": {
-
     "babel-plugin-react-native-classname-to-style": "^1.2.2",
     "babel-plugin-react-native-platform-specific-extensions": "^1.1.1",
     "expo": "^34.0.1",

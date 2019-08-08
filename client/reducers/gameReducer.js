@@ -4,6 +4,30 @@ games:[],
 newGame: ''
 }
 
+export default gameReducer = (state = initialState, action) => {
+let games;
+let newGame;
+
+switch(action.type) {
+  case actionTypes.ADD_GAME:
+    games = action.payload.games; 
+    // return new state
+    return {
+      ...state,
+          games
+    } 
+  case newGame.ADD_NEWGAME:
+    newGame = action.payload.newGame;
+    // return new state
+    return {
+      ...state,
+        newGame
+    }
+  default:
+    return initialState;
+    //return initial
+}
+}
 
 
 

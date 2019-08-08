@@ -15,37 +15,27 @@ import { bindActionCreators } from 'redux';
 
 
 cd 
-export const populateSideBarHandler = (user) => ({
-    type: types.populateSideBarHandler,
-    payload: user,
+export const addUserInfo = (userObj) => ({
+    type: types.ADD_USERINFO,
+    payload: {
+      username: userObj.username,
+      id: userObj.id,
+      company: userObj.company,
+      office: userObj.office,
+    },
   });
 
-  export const populateGameDisplayHandler = (games) => ({
-    type: types.populateGameDisplayHandler,
-    payload: games,
+  export const addGameArray = (gamesArray) => ({
+    type: types.ADD_GAME,
+    payload: {
+      games: gamesArray.games,
+      
+    }
   });
 
-  export const populateGameHandler = (game) => ({
-    type: types.populateGameHandler,
-    payload: game,
-  });
-
-  export const addGameToOfficeHandler = (game) => ({
-    type: types.addGameToOfficeHandler,
-    payload: game,
-  });
-
-  export const changeUserRankHandler = (gameName, users) => ({
-    type: types.changeUserRankHandler,
-    payload: gameName, users
-  });
-
-  export const loginHandler = (user) => ({
-    type: types.loginHandler,
-    payload: user,
-  });
-
-  export const signupHandler = (user) => ({
-    type: types.signupHandler,
-    payload: user,
+  export const addNewGame = (newGameString) => ({
+    type: types.ADD_NEWGAME,
+    payload: {
+    newGame: newGameString
+    }
   });

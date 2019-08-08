@@ -8,10 +8,7 @@
  *
  * ************************************
  */
-export const populateSideBarHandler = "populateSideBarHandler"
-export const populateGameDisplayHandler= "populateGameDisplayHandler"
-export const populateGameHandler = "populateGameHandler"
-export const addGameToOfficeHandler = "addGameToOfficeHandler"
-export const changeUserRankHandler = "changeUserRankHandler"
-export const loginHandler = "loginHandler"
-export const signupHandler = "signupHandler"
+export const ADD_USERINFO = 'ADD_USERINFO';
+export const ADD_GAME= "ADD_GAME"
+export const ADD_NEWGAME = "ADD_NEWGAME"
+
