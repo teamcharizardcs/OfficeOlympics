@@ -25,7 +25,7 @@ class HomeScreen extends Component {
   static navigationOptions = {
     title: "Login",
     headerStyle: {
-      backgroundColor: "#d9b0ce"
+      backgroundColor: "#fff"
     },
     headerTintColor: "#fff",
     headerTitleStyle: {
@@ -46,7 +46,7 @@ class HomeScreen extends Component {
             leftIcon={<Icon name="user" size={24} color="#777" />}
           />
           <Button
-            buttonStyle={{ backgroundColor: "#d9b0ce" }}
+            buttonStyle={{ backgroundColor: "#777" }}
             title="Login"
             onPress={() =>
               this.props.navigation.navigate("Dashboard", {

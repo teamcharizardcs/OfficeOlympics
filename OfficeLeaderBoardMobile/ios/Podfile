@@ -31,6 +31,8 @@ target 'OfficeLeaderBoardMobile' do
 
   use_unimodules!
 
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
   target 'OfficeLeaderBoardMobileTests' do
     inherit! :search_paths
   end
