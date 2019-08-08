@@ -5,6 +5,7 @@ import {ThemeProvider, Input, Button} from 'react-native-elements';
 import React, { Component } from "react";
 import Icon from "react-native-vector-icons/EvilIcons";
 import Background from '../assets/images/background.jpg'
+import * as Font  from 'expo-font';
 //   import AppTabNavigator from './Navigator2';
 // import { TabNavigation } from "./Navigator";
 
@@ -25,16 +26,27 @@ import Background from '../assets/images/background.jpg'
 
 
 class HomeScreen extends Component {
-  // static navigationOptions = {
-  //   title: "Login",
-  //   headerStyle: {
-  //     backgroundColor: "#03738c"
-  //   },
-  //   headerTintColor: "#fff",
-  //   headerTitleStyle: {
-  //     fontWeight: "bold"
-  //   }
-  // };
+  static navigationOptions = {
+    header: null
+    // title: "Login",
+    // headerStyle: {
+    //   backgroundColor: "white"
+    // },
+    // headerTintColor: "black",
+    // headerTitleStyle: {
+    //   fontWeight: "bold"
+    // }
+  };
+   state = {
+    fontLoaded: false
+  }
+  async componentDidMount(){
+   await Font.loadAsync({
+      'Permanent-Marker': require('../assets/fonts/PermanentMarker-Regular.ttf')
+    })
+    this.setState({ fontLoaded: true })
+  }
+ 
   render() {
 
     return (
@@ -42,8 +54,11 @@ class HomeScreen extends Component {
     
       
       <ImageBackground source={Background} style={{width: '100%', height: '100%'}}>    
-       
+        { this.state.fontLoaded? (
+      <Text style={{ fontFamily: 'Permanent-Marker', fontSize: 45, position: 'absolute', top: 80, left: 10, color: '#fff'}}>Office Olympics</Text>
+    ): null}
    <View style={styles.container}>
+    
 
           <Input
             placeholder="Username"
@@ -61,9 +76,9 @@ class HomeScreen extends Component {
           />
           <Button
             containerStyle={{margin: 10}}
-            buttonStyle={{backgroundColor: 'transparent', borderRadius: 20, borderColor: '#ffffff', overflow: 'hidden'}}
+            buttonStyle={{backgroundColor: 'rgba(255, 255, 255, .4)', borderRadius: 20, borderColor: '#ffffff', overflow: 'hidden'}}
             title="Login"
-            titleStyle={{color: 'white'}}
+            titleStyle={{color: 'white', width: '50%'}}
             type="outline"
             onPress={() =>
               this.props.navigation.navigate("Dashboard", {
