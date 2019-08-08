@@ -6,10 +6,16 @@
     "start": "react-native start",
     "test": "jest"
   },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
+  },
   "dependencies": {
     "babel-plugin-react-native-classname-to-style": "^1.2.2",
     "babel-plugin-react-native-platform-specific-extensions": "^1.1.1",
     "expo": "^34.0.1",
+    "expo-font": "^6.0.1",
     "node-sass": "^4.12.0",
     "react": "16.8.3",
     "react-dom": "^16.8.6",

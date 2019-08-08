@@ -9,6 +9,7 @@ import SmashBros from "../assets/images/smashbros.jpg";
 import RageCage from "../assets/images/ragecage.jpg";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Background from '../assets/images/background.jpg'
+import { TouchableOpacity } from "react-native-gesture-handler";
 const RaisedButton = props => <Button raised {...props} />;
 
 const images = [RageCage, SmashBros, Pong];
@@ -39,15 +40,16 @@ const games = [
 export default class Dashboard extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: (
-        <Avatar
-          rounded
-          source={{
-            uri:
-              "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-          }}
-        />
-      )
+      header: null
+      // headerTitle: (
+      //   <Avatar
+      //     rounded
+      //     source={{
+      //       uri:
+      //         "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
+      //     }}
+      //   />
+      // )
     };
   };
   render() {
@@ -63,8 +65,9 @@ export default class Dashboard extends Component {
           <Text>otherParm: {JSON.stringify(otherParam)}</Text> */}
 
           <Input
+            containerStyle={{marginTop: 40}}
             placeholder="     ...game input"
-            placeholderTextColor="#777"
+            placeholderTextColor="#ffff"
           
             leftIcon={<Icon name="plus-circle" size={24} color="#ffffff" />}
           />
@@ -83,16 +86,18 @@ export default class Dashboard extends Component {
                   borderBottomLeftRadius: 10,
                   overflow: "hidden"
                 }}
+              
                 titleStyle={{ color: "#fff", textDecorationLine: "underline" }}
                 containerStyle={{
                   padding: 0,
                   borderRadius: 10,
                   overflow: "hidden",
-                  backgroundColor: "transparent"
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)'
                 }}
               >
                 {games.map((u, i) => {
                   return (
+                    <TouchableOpacity>
                     <ListItem
                       containerStyle={{ backgroundColor: "transparent" }}
                       key={i}
@@ -103,6 +108,7 @@ export default class Dashboard extends Component {
                       subtitleStyle={{ color: "#fff" }}
                       chevron
                     />
+                    </TouchableOpacity>
                   );
                 })}
               </Card>

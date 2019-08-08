@@ -4,7 +4,8 @@ import { Platform } from 'react-native';
 // import Navigation from './components/Navigator';
 // import {HomeScreen} from './components/Screens.js';
 import AppNavigator from './components/Navigator.js';
-import { LinearGradient } from 'expo-linear-gradient';
+
+
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -12,6 +13,7 @@ const instructions = Platform.select({
 });
 
 export default class App extends Component {
+ 
   render() {
     return  <AppNavigator/>
   }
