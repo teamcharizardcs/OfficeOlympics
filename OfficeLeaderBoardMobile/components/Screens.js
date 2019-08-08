@@ -2,8 +2,8 @@ import { Text, View, ScrollView } from "react-native";
 import styles from "./Styles";
 //   import { createStackNavigator } from "react-navigation";
 import {ThemeProvider, Input, Button} from 'react-native-elements';
-import Icon from "react-native-vector-icons/FontAwesome";
 import React, { Component } from "react";
+import Icon from "react-native-vector-icons/FontAwesome";
 //   import AppTabNavigator from './Navigator2';
 // import { TabNavigation } from "./Navigator";
 
@@ -25,7 +25,7 @@ class HomeScreen extends Component {
   static navigationOptions = {
     title: "Login",
     headerStyle: {
-      backgroundColor: "#d9b0ce"
+      backgroundColor: "#fff"
     },
     headerTintColor: "#fff",
     headerTitleStyle: {
@@ -46,7 +46,7 @@ class HomeScreen extends Component {
             leftIcon={<Icon name="user" size={24} color="#777" />}
           />
           <Button
-            buttonStyle={{ backgroundColor: "#d9b0ce" }}
+            buttonStyle={{ backgroundColor: "#777" }}
             title="Login"
             onPress={() =>
               this.props.navigation.navigate("Dashboard", {
