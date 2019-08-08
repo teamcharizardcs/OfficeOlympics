@@ -10,32 +10,29 @@
  */
 
 // import actionType constants
-import * as types from '../constants/actionTypes'
-import { bindActionCreators } from 'redux';
+import * as types from '../constants/actionTypes';
 
+export const addUserInfo = userObj => ({
+  type: types.ADD_USERINFO,
+  payload: {
+    username: userObj.username,
+    id: userObj.id,
+    company: userObj.company,
+    office: userObj.office,
+  },
+});
 
-cd 
-export const addUserInfo = (userObj) => ({
-    type: types.ADD_USERINFO,
-    payload: {
-      username: userObj.username,
-      id: userObj.id,
-      company: userObj.company,
-      office: userObj.office,
-    },
-  });
+export const addGame = game => ({
+  type: types.ADD_GAME,
+  payload: game,
+});
 
-  export const addGameArray = (gamesArray) => ({
-    type: types.ADD_GAME,
-    payload: {
-      games: gamesArray.games,
-      
-    }
-  });
+export const loadGames = gamesArray => ({
+  type: types.LOAD_GAMES,
+  payload: gamesArray,
+});
 
-  export const addNewGame = (newGameString) => ({
-    type: types.ADD_NEWGAME,
-    payload: {
-    newGame: newGameString
-    }
-  });
+export const addNewGame = newGameString => ({
+  type: types.ADD_NEWGAME,
+  payload: newGameString,
+});
