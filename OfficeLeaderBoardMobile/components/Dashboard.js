@@ -4,8 +4,16 @@ import styles from "./Styles";
 import { Button, Avatar, Input, ListItem, Card } from "react-native-elements";
 import Icon from "react-native-vector-icons/FontAwesome";
 import {LinearGradient} from 'expo-linear-gradient';
+import Pong from '../assets/images/pingpong.jpg'
+import SmashBros from '../assets/images/smashbros.jpg'
+import RageCage from '../assets/images/ragecage.jpg'
+
 
 const RaisedButton = props => <Button raised {...props} />;
+
+const images = [
+  RageCage, SmashBros, Pong
+]
 
 const games = [
   {
@@ -67,16 +75,20 @@ export default class Dashboard extends Component {
           <Text>GameContainerGoesHere...</Text>
             {games.map((u, i) => {
               return (
-                <Card key={i} title={u.name} color="#fff" containerStyle={{padding: 0, borderRadius: 10, overflow: 'hidden', backgroundColor: 'transparent'}}>
+                // <Image key={i} source={require(images[i])}/>
+                <Card key={i} title={u.name} image={images[i]} titleStyle={{color: '#fff'}} containerStyle={{padding: 0, borderRadius: 10, overflow: 'hidden', backgroundColor: 'transparent'}}>
                 {games.map((u, i) => {
                   return (
+                    
                     <ListItem
                       containerStyle={{backgroundColor: 'transparent'}}
                       
                       key={i}
+                      color="#ffffff"
                       title={u.users.username}
                       subtitle={u.users.rank}
-                      color="#ffffff"
+                      titleStyle={{color: '#fff'}}
+                      subtitleStyle={{color: '#fff'}}
                       chevron
                       />
                   )
