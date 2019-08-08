@@ -1,53 +1,70 @@
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, ImageBackground } from "react-native";
 import styles from "./Styles";
 //   import { createStackNavigator } from "react-navigation";
 import {ThemeProvider, Input, Button} from 'react-native-elements';
 import React, { Component } from "react";
-import Icon from "react-native-vector-icons/FontAwesome";
+import Icon from "react-native-vector-icons/EvilIcons";
+import Background from '../assets/images/background.jpg'
 //   import AppTabNavigator from './Navigator2';
 // import { TabNavigation } from "./Navigator";
+
+
 
 //   import {createAppContainer} from 'react-navigation';
 // import Navigation from './components/Navigator';
 
-const theme = {
-  Button: {
-    raised: true,
-    containerStyle: {
-      marginTop: 10,
-      backgroundColor: "black"
-    }
-  }
-};
+// const theme = {
+//   Button: {
+//     raised: true,
+//     containerStyle: {
+//       marginTop: 10,
+//       backgroundColor: LinearGradient("#03738c", '#024059')
+//     }
+//   }
+// };
 
 
 class HomeScreen extends Component {
-  static navigationOptions = {
-    title: "Login",
-    headerStyle: {
-      backgroundColor: "#fff"
-    },
-    headerTintColor: "#fff",
-    headerTitleStyle: {
-      fontWeight: "bold"
-    }
-  };
+  // static navigationOptions = {
+  //   title: "Login",
+  //   headerStyle: {
+  //     backgroundColor: "#03738c"
+  //   },
+  //   headerTintColor: "#fff",
+  //   headerTitleStyle: {
+  //     fontWeight: "bold"
+  //   }
+  // };
   render() {
+
     return (
-      <ThemeProvider theme={theme}>
-        <View style={styles.container}>
+
+    
+      
+      <ImageBackground source={Background} style={{width: '100%', height: '100%'}}>    
+       
+   <View style={styles.container}>
+
           <Input
-            placeholder="USERNAME"
-            leftIcon={<Icon name="user" size={24} color="#777" />}
+            placeholder="Username"
+            placeholderTextColor='white'
+            inputContainerStyle={{borderRadius: 20, overflow:'hidden', borderColor: 'white'}}
+            leftIcon={<Icon name="user" size={32} color="white" />}
           />
           <Input
-            placeholder="PASSWORD"
+            containerStyle={{marginTop: 10}}
+            placeholder="Password"
+            placeholderTextColor='white'
             color="white"
-            leftIcon={<Icon name="user" size={24} color="#777" />}
+            inputContainerStyle={{borderRadius: 20, overflow:'hidden', borderColor: 'white'}}
+            leftIcon={<Icon name="lock" size={32} color="white" />}
           />
           <Button
-            buttonStyle={{ backgroundColor: "#777" }}
+            containerStyle={{margin: 10}}
+            buttonStyle={{backgroundColor: 'transparent', borderRadius: 20, borderColor: '#ffffff', overflow: 'hidden'}}
             title="Login"
+            titleStyle={{color: 'white'}}
+            type="outline"
             onPress={() =>
               this.props.navigation.navigate("Dashboard", {
                 // we can pass other params in here...
@@ -58,8 +75,10 @@ class HomeScreen extends Component {
               })
             }
           />
-        </View>
-      </ThemeProvider>
+      
+            </View>
+ 
+            </ImageBackground>
     );
   }
 }
