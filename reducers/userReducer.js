@@ -1,3 +1,4 @@
+import * as actionTypes from '../constants/actionTypes';
 const initialState = {
 username: '',
 id: 0,
@@ -25,6 +26,7 @@ export default userReducer = (state = initialState, action) => {
         office
       };
     default:
+        console.log('returning default');
       return initialState;
   }
 };

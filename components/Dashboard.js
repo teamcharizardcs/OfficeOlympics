@@ -10,48 +10,66 @@ import RageCage from "../assets/images/ragecage.jpg";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Background from '../assets/images/background.jpg'
 import { TouchableOpacity } from "react-native-gesture-handler";
+import {connect} from 'react-redux';
+import * as actions from '../actions/actions';
+
 const RaisedButton = props => <Button raised {...props} />;
 
-const images = [RageCage, SmashBros, Pong];
+const images = [Pong, SmashBros, RageCage];
 
-const games = [
-  {
-    name: "Ping Pong",
-    users: {
-      username: "Soroush",
-      rank: "Rank: 1st"
-    }
-  },
-  {
-    name: "SmashBros.",
-    users: {
-      username: "Vance",
-      rank: "Rank: 2nd"
-    }
-  },
-  {
-    name: "Rage Cage",
-    users: {
-      username: "Neftali",
-      rank: "Rank: 3rd"
-    }
-  }
-];
-export default class Dashboard extends Component {
+// const games = [
+//   {
+//     name: "Ping Pong",
+//     users: {
+//       username: "Soroush",
+//       rank: "Rank: 1st"
+//     }
+//   },
+//   {
+//     name: "SmashBros.",
+//     users: {
+//       username: "Vance",
+//       rank: "Rank: 2nd"
+//     }
+//   },
+//   {
+//     name: "Rage Cage",
+//     users: {
+//       username: "Neftali",
+//       rank: "Rank: 3rd"
+//     }
+//   }
+// ];
+
+const mapStateToProps = store => ({
+  games: store.game.games,
+  newGame: store.game.newGame,
+});
+
+const fetchGames = dispatch => fetch('http://192.168.0.127:3000/api/games/1')
+    .then(res => res.json())
+    .then(res => dispatch(actions.loadGames(res)))
+    .catch(e => console.log('Error fetching games', e.stack));
+
+const mapDispatchToProps = dispatch => ({
+  loadGames: () => fetchGames(dispatch),
+  addGame: (game) => dispatch(actions.addGame(game)),
+  setGameName: (game) => dispatch(actions.setNewGame(game)),
+});
+
+
+class Dashboard extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       header: null
-      // headerTitle: (
-      //   <Avatar
-      //     rounded
-      //     source={{
-      //       uri:
-      //         "https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg"
-      //     }}
-      //   />
-      // )
     };
   };
+
+  async componentDidMount() {
+    await this.props.loadGames();
+    console.log('got games?');
+  }
+
   render() {
     const { navigation } = this.props;
     const itemId = navigation.getParam("itemId", "NO-ID");
@@ -65,20 +83,20 @@ export default class Dashboard extends Component {
           <Text>otherParm: {JSON.stringify(otherParam)}</Text> */}
 
           <Input
-            containerStyle={{marginTop: 40}}
+            containerStyle={{marginTop: 40, marginRight: 20}}
             placeholder="     ...game input"
             placeholderTextColor="#ffff"
-          
-            leftIcon={<Icon name="plus-circle" size={24} color="#ffffff" />}
+            style={{color: '#fff'}}
+            rightIcon={<Icon name="plus-circle" size={24} color="#ffffff" />}
           />
           {/* <Divider style ={{backgroundColor : "#777"}}/>; */}
 
-          {games.map((u, i) => {
+          {Object.keys(this.props.games).map((u, i) => {
             return (
               // <Image key={i} source={require(images[i])}/>
               <Card
                 key={i}
-                title={u.name}
+                title={u}
                 image={images[i]}
                 imageStyle={{
                   margin: 10,
@@ -95,15 +113,15 @@ export default class Dashboard extends Component {
                   backgroundColor: 'rgba(0, 0, 0, 0.5)'
                 }}
               >
-                {games.map((u, i) => {
+                {this.props.games[u].map((user, idx) => {
                   return (
                     <TouchableOpacity>
                     <ListItem
                       containerStyle={{ backgroundColor: "transparent" }}
-                      key={i}
+                      key={`${i}-${idx}`}
                       color="#ffffff"
-                      title={u.users.username}
-                      subtitle={u.users.rank}
+                      title={user.name}
+                      subtitle={user.rank}
                       titleStyle={{ color: "#fff" }}
                       subtitleStyle={{ color: "#fff" }}
                       chevron
@@ -114,36 +132,13 @@ export default class Dashboard extends Component {
               </Card>
             );
           })}
-          {/* <Button
-                icon={<Icon color='#ffffff' />}
-                backgroundColor='#03A9F4'
-                buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
-                title='VIEW NOW' /> */}
 
-          {/* <RaisedButton
-            title="Go to Dashboard...again"
-            onPress={() =>
-              this.props.navigation.push("Dashboard", {
-                itemId: Math.floor(Math.random() * 100)
-              })
-            }
-          />
-          <RaisedButton
-            title="Go to Home"
-            onPress={() => this.props.navigation.push("Home")}
-          />
-          <RaisedButton
-            title="Go to Game"
-            onPress={() => this.props.navigation.push("Game")}
-          />
-          <RaisedButton
-            title="Go back"
-            onPress={() => this.props.navigation.goBack()}
-          /> */}
-          {/* <TabNavigation  />s */}
         </ScrollView>
-      {/* // </LinearGradient> */}
       </ImageBackground>
     );
   }
 }
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+

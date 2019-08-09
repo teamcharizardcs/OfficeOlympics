@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const port = process.env.PORT;
@@ -15,7 +15,7 @@ const statsRouter = require('./routes/statsRoute.js');
 
 // handle parsing
 app.use(bodyParser.json());
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use('/', express.static(path.join(__dirname, '../build')));
 
 app.use('/api/auth', authRouter);

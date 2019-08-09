@@ -4,7 +4,8 @@ import { Platform } from 'react-native';
 // import Navigation from './components/Navigator';
 // import {HomeScreen} from './components/Screens.js';
 import AppNavigator from './components/Navigator.js';
-
+import { Provider} from 'react-redux';
+import store from './store';
 
 
 const instructions = Platform.select({
@@ -15,7 +16,9 @@ const instructions = Platform.select({
 export default class App extends Component {
  
   render() {
-    return  <AppNavigator/>
+    return(
+      <Provider store={store}><AppNavigator/></Provider>
+    )  
   }
 }
 

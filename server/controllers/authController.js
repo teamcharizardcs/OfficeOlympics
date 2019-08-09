@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const pool = require('../db/db');
-const jwt = require('jsonwebtoken');
 
 const SALTROUNDS = 10;
 const authController = {};
@@ -42,31 +41,31 @@ authController.validateUserInput = (req, res, next) => {
    * @param req - requires the username in the body, but doesn't use it currently
    * @param res - adds the property info that's just user info and an isSigned bool
    */
-authController.isSigned = (req, res, next) => {
-  console.log('checking if user is Signed');
-  // if the token is empty continue onto the next piece of middleware (either signup or login)
-  if (!req.cookies.token) return next();
+// authController.isSigned = (req, res, next) => {
+//   console.log('checking if user is Signed');
+//   // if the token is empty continue onto the next piece of middleware (either signup or login)
+//   if (!req.cookies.token) return next();
   
-  const { username } = req.body;
-  // otherwise verify the token in the req body, using the jwt_key from the .env file
-  jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, decoded) => {
-    if (!decoded) {
-      return next({
-        log: 'Error verifying token',
-        message: { err: 'Could not verify token' },
-      });
-    }
-    res.locals.info = {
-      isSigned: true,
-      user: {
-        username,
-        id: req.cookies.id,
-      },
-    };
+//   const { username } = req.body;
+//   // otherwise verify the token in the req body, using the jwt_key from the .env file
+//   jwt.verify(req.cookies.token, process.env.JWT_KEY, (err, decoded) => {
+//     if (!decoded) {
+//       return next({
+//         log: 'Error verifying token',
+//         message: { err: 'Could not verify token' },
+//       });
+//     }
+//     res.locals.info = {
+//       isSigned: true,
+//       user: {
+//         username,
+//         id: req.cookies.id,
+//       },
+//     };
 
-    return next();
-  });
-};
+//     return next();
+//   });
+// };
 
 /**
    * singUp - checks the user's company to see if it's in the db, otherwise creates it
@@ -137,11 +136,11 @@ authController.signUp = async (req, res, next) => {
       user: { username: res.locals.user.username, id: res.locals.user._id },
     };
 
-    const token = jwt.sign(payload, process.env.JWT_KEY,
-      { algorithm: 'HS256', expiresIn: '1 day' });
+    // const token = jwt.sign(payload, process.env.JWT_KEY,
+    //   { algorithm: 'HS256', expiresIn: '1 day' });
 
-    res.cookie('token', token, { httpOnly: true });
-    res.cookie('id', user.rows[0]._id);
+    // res.cookie('token', token, { httpOnly: true });
+    // res.cookie('id', user.rows[0]._id);
     return next();
   } catch (e) {
     return next({
@@ -193,15 +192,15 @@ authController.login = async (req, res, next) => {
       user: res.locals.user,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_KEY,
-      { algorithm: 'HS256', expiresIn: '1 day' });
+    // const token = jwt.sign(payload, process.env.JWT_KEY,
+    //   { algorithm: 'HS256', expiresIn: '1 day' });
 
-    res.cookie('token', token, { httpOnly: true });
-    res.cookie('id', result.rows[0]._id);
-    res.locals.jwt = {
-      token,
-      isSigned: true,
-    };
+    // res.cookie('token', token, { httpOnly: true });
+    // res.cookie('id', result.rows[0]._id);
+    // res.locals.jwt = {
+    //   token,
+    //   isSigned: true,
+    // };
 
     return next();
   } catch (e) {

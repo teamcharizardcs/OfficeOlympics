@@ -3,7 +3,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",
-    "start": "react-native start",
+    "start": "react-native start & node server/server.js",
     "test": "jest"
   },
   "rnpm": {
@@ -14,9 +14,14 @@
   "dependencies": {
     "babel-plugin-react-native-classname-to-style": "^1.2.2",
     "babel-plugin-react-native-platform-specific-extensions": "^1.1.1",
+    "bcrypt": "^3.0.6",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.0.0",
     "expo": "^34.0.1",
     "expo-font": "^6.0.1",
+    "express": "^4.17.1",
     "node-sass": "^4.12.0",
+    "pg": "^7.12.0",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
     "react-native": "^0.59.8",
@@ -30,7 +35,10 @@
     "react-native-unimodules": "~0.5.2",
     "react-native-vector-icons": "^6.6.0",
     "react-native-web": "^0.11.4",
-    "react-navigation": "^3.11.1"
+    "react-navigation": "^3.11.1",
+    "react-redux": "^7.1.0",
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

@@ -1,7 +1,7 @@
 import * as actionTypes from '../constants/actionTypes';
 
 const initialState = {
-  games: [],
+  games: {},
   newGame: '',
 };
 
@@ -13,17 +13,19 @@ const gameReducer = (state = initialState, action) => {
     case actionTypes.LOAD_GAMES:
       games = action.payload; 
       // return new state
+      console.log('load games');
       return {
         ...state,
         games,
       };
     case actionTypes.ADD_GAME:
-      games = [...state.games, action.payload];
+      games = {...state.games};
+      games[action.payload] = [];
       return {
         ...state,
         games,
       };
-    case newGame.ADD_NEWGAME:
+    case actionTypes.SET_NEWGAME:
       newGame = action.payload;
       // return new state
       return {
@@ -31,6 +33,7 @@ const gameReducer = (state = initialState, action) => {
         newGame,
       };
     default:
+      console.log('returning default');
       return initialState;
   }
 };
