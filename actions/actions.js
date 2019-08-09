@@ -22,9 +22,9 @@ export const addUserInfo = userObj => ({
   },
 });
 
-export const addGame = game => ({
+export const addGame = gameObj => ({
   type: types.ADD_GAME,
-  payload: game,
+  payload: gameObj,
 });
 
 export const loadGames = gamesArray => ({
@@ -32,7 +32,7 @@ export const loadGames = gamesArray => ({
   payload: gamesArray,
 });
 
-export const addNewGame = newGameString => ({
-  type: types.ADD_NEWGAME,
+export const setNewGame = newGameString => ({
+  type: types.SET_NEWGAME,
   payload: newGameString,
 });

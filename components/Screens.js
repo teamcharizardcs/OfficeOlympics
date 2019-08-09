@@ -5,7 +5,7 @@ import {ThemeProvider, Input, Button} from 'react-native-elements';
 import React, { Component } from "react";
 import Icon from "react-native-vector-icons/EvilIcons";
 import Background from '../assets/images/background.jpg'
-import * as Font  from 'expo-font';
+// import * as Font  from 'expo-font';
 //   import AppTabNavigator from './Navigator2';
 // import { TabNavigation } from "./Navigator";
 
@@ -37,15 +37,15 @@ class HomeScreen extends Component {
     //   fontWeight: "bold"
     // }
   };
-   state = {
-    fontLoaded: false
-  }
-  async componentDidMount(){
-   await Font.loadAsync({
-      'Permanent-Marker': require('../assets/fonts/PermanentMarker-Regular.ttf')
-    })
-    this.setState({ fontLoaded: true })
-  }
+  //  state = {
+  //   fontLoaded: false
+  // }
+  // async componentDidMount(){
+  //  await Font.loadAsync({
+  //     'Permanent-Marker': require('../assets/fonts/PermanentMarker-Regular.ttf')
+  //   })
+  //   this.setState({ fontLoaded: true })
+  // }
  
   render() {
 
@@ -54,9 +54,9 @@ class HomeScreen extends Component {
     
       
       <ImageBackground source={Background} style={{width: '100%', height: '100%'}}>    
-        { this.state.fontLoaded? (
+        {/* { this.state.fontLoaded? (
       <Text style={{ fontFamily: 'Permanent-Marker', fontSize: 45, position: 'absolute', top: 80, left: 10, color: '#fff'}}>Office Olympics</Text>
-    ): null}
+    ): null} */}
    <View style={styles.container}>
     
 

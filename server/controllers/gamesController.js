@@ -6,14 +6,25 @@ gamesController.getGames = async (req, res, next) => {
   const { officeId } = req.params;
   try {
     const query = {
-      text: 'SELECT name FROM games WHERE office_id = $1 order by name asc',
+      text: `SELECT games.name, employees.username, stats.rank from games
+      join stats on games._id = stats.game_id
+      join employees on stats.employee_id = employees._id
+      where games.office_id = $1`,
       values: [officeId],
     };
 
     const result = await pool.query(query);
-    console.log(result.rows);
-    res.locals.games = result.rows;
-
+    // console.log(result.rows);
+    const games = {};
+    result.rows.forEach((row) => {
+      if (!games[row.name]) {
+        games[row.name] = [];
+      }
+      games[row.name].push({name: row.username, rank: row.rank});
+    });
+    console.log(JSON.stringify(games));
+    
+    res.locals.games = games;
     return next();
   } catch (e) {
     return next({
