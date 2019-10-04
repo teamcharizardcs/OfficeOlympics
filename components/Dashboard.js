@@ -1,9 +1,6 @@
-import { ScrollView, Text, Image, ImageBackground } from "react-native";
+import { ScrollView, ImageBackground } from "react-native";
 import React, { Component } from "react";
-// import styles from "./Styles";
-import { Button, Avatar, Input, ListItem, Card } from "react-native-elements";
-// import Icon from "react-native-vector-icons/FontAwesome";
-import { LinearGradient } from "expo-linear-gradient";
+import { Button, Input, ListItem, Card } from "react-native-elements";
 import Pong from "../assets/images/pingpong.jpg";
 import SmashBros from "../assets/images/smashbros.jpg";
 import RageCage from "../assets/images/ragecage.jpg";
@@ -13,40 +10,17 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import {connect} from 'react-redux';
 import * as actions from '../actions/actions';
 
-const RaisedButton = props => <Button raised {...props} />;
 
-const images = [Pong, SmashBros, RageCage];
 
-// const games = [
-//   {
-//     name: "Ping Pong",
-//     users: {
-//       username: "Soroush",
-//       rank: "Rank: 1st"
-//     }
-//   },
-//   {
-//     name: "SmashBros.",
-//     users: {
-//       username: "Vance",
-//       rank: "Rank: 2nd"
-//     }
-//   },
-//   {
-//     name: "Rage Cage",
-//     users: {
-//       username: "Neftali",
-//       rank: "Rank: 3rd"
-//     }
-//   }
-// ];
+const images = [SmashBros, Pong, RageCage];
+
 
 const mapStateToProps = store => ({
   games: store.game.games,
   newGame: store.game.newGame,
 });
-
-const fetchGames = dispatch => fetch('http://192.168.0.127:3000/api/games/1')
+//need to use personal computer's ip address in order to contact server
+const fetchGames = dispatch => fetch('youripaddress:3000/api/games/1')
     .then(res => res.json())
     .then(res => dispatch(actions.loadGames(res)))
     .catch(e => console.log('Error fetching games', e.stack));
@@ -71,29 +45,21 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { navigation } = this.props;
-    const itemId = navigation.getParam("itemId", "NO-ID");
-    const otherParam = navigation.getParam("otherParam", "some default value");
     return (
-      // <LinearGradient colors={["#03738c", "#024059"]}>
+
       <ImageBackground source={Background} style={{width: '100%', height: '100%'}}>    
         <ScrollView>
-          {/* <Text>DetailsScreen</Text>
-          <Text>itemId: {JSON.stringify(itemId)}</Text>
-          <Text>otherParm: {JSON.stringify(otherParam)}</Text> */}
-
           <Input
             containerStyle={{marginTop: 40, marginRight: 20}}
             placeholder="     ...game input"
             placeholderTextColor="#ffff"
-            style={{color: '#fff'}}
+            inputStyle={{color: '#fff'}}
             rightIcon={<Icon name="plus-circle" size={24} color="#ffffff" />}
           />
-          {/* <Divider style ={{backgroundColor : "#777"}}/>; */}
-
+      {/* loop through return game info to dynamically display cards */}
           {Object.keys(this.props.games).map((u, i) => {
             return (
-              // <Image key={i} source={require(images[i])}/>
+
               <Card
                 key={i}
                 title={u}
