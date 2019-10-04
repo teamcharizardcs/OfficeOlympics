@@ -1,8 +1,5 @@
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
-// import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
-
 import {HomeScreen, GameScreen, Dashboard} from './Screens.js';
-
 
 const TabNavigator = createBottomTabNavigator (
     {

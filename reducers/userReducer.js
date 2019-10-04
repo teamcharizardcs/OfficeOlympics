@@ -20,7 +20,7 @@ export default userReducer = (state = initialState, action) => {
       office = ation.payload.office;
       return {
         ...state,
-        username, // this is the same as username: username,
+        username, 
         id,
         company,
         office

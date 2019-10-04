@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 10727,
-  "expoServerNgrokUrl": "https://ae-mh8.taylor-burrington.officeolympics.exp.direct",
-  "packagerNgrokUrl": "https://packager.ae-mh8.taylor-burrington.officeolympics.exp.direct",
-  "ngrokPid": 10735
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
